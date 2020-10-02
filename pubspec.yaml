@@ -1,0 +1,15 @@
+name: unique_list
+description: An implementation of List that enforces all elements be unique.
+version: 0.1.0
+homepage: https://github.com/james-alex/unique_list
+
+environment:
+  sdk: '>=2.7.0 <3.0.0'
+
+dependencies:
+  meta: ^1.2.3
+
+dev_dependencies:
+  collection: ^1.14.13
+  pedantic: ^1.9.0
+  test: ^1.14.4
