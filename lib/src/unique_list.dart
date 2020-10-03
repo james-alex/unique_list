@@ -18,12 +18,12 @@ extension ToUniqueList<E> on Iterable<E> {
   /// the value remaining.
   UniqueList<E> toUniqueList({
     bool growable = true,
+    bool nullable = true,
     bool strict = false,
-    bool nullable = false,
   }) {
     assert(growable != null);
-    assert(strict != null);
     assert(nullable != null);
+    assert(strict != null);
 
     final list = UniqueList._constructListFrom<E>(this,
         nullable: nullable, strict: strict);
@@ -63,9 +63,9 @@ class UniqueList<E> implements List<E> {
   /// is added to the list already exists in the list.
   ///
   /// If [length] is provided, a fixed-length list will be created, otherwise
-  /// a growable, non-nullable list will be created. __Note:__ To create a
-  /// growable, strict and nullable list, use [UniqueList.empty] and set the
-  /// [strict] and [nullable] parameters to `true` and `false` respectively.
+  /// a growable list will be created. __Note:__ To create a growable, strict
+  /// and non-nullable list, use [UniqueList.empty] and set the [strict] and
+  /// [nullable] parameters to `true` and `false` respectively.
   factory UniqueList.strict([int length]) {
     assert(length == null || length >= 0);
 
@@ -73,7 +73,7 @@ class UniqueList<E> implements List<E> {
       return UniqueList._(List<E>(length), strict: true);
     }
 
-    return UniqueList._(<E>[], strict: true, nullable: false);
+    return UniqueList._(<E>[], strict: true);
   }
 
   /// Creates a new empty list.

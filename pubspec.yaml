@@ -1,6 +1,6 @@
 name: unique_list
 description: An implementation of List that enforces all elements be unique.
-version: 0.1.0
+version: 0.1.1
 homepage: https://github.com/james-alex/unique_list
 
 environment:

@@ -205,8 +205,8 @@ As many of [List]'s methods return an [Iterable], they're often cast back to a
 extends [Iterable] with a [toUniqueList] method.
 
 Like [toList], the [toUniqueList] method contains a [growable] parameter, in
-addition to the [strict] and [nullable] parameters, which are both `false` by
-default.
+addition to the [nullable] and [strict] parameters, which are `true` and `false`
+respectively by default.
 
 ```dart
 var list = UniqueList<int>.from([0, 1, 2, 3, 4]);
