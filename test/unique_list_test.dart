@@ -444,7 +444,7 @@ void main() {
 
     test('ReplaceRange', () {
       final uniqueList = UniqueList<int>.of(list);
-      final sublist1 = list.sublist(3, 7).reversed;
+      final sublist1 = <int>[3, 4, 5, 4, 3];
 
       Error error;
 
@@ -457,12 +457,19 @@ void main() {
       expect(error is DuplicateValueError, equals(true));
       expect(eq(uniqueList, list), equals(true));
 
-      final sublist2 = <int>[10, 11, 12, 13];
-      final expectedList = List<int>.of(list)..replaceRange(3, 7, sublist2);
+      final sublist2 = list.sublist(3, 7).reversed;
+      final expectedList1 = List<int>.of(list)..replaceRange(3, 7, sublist2);
 
       uniqueList.replaceRange(3, 7, sublist2);
 
-      expect(eq(uniqueList, expectedList), equals(true));
+      expect(eq(uniqueList, expectedList1), equals(true));
+
+      final sublist3 = <int>[10, 11, 12, 13];
+      final expectedList2 = List<int>.of(list)..replaceRange(3, 7, sublist3);
+
+      uniqueList.replaceRange(3, 7, sublist3);
+
+      expect(eq(uniqueList, expectedList2), equals(true));
 
       try {
         uniqueList.replaceRange(8, 11, sublist1);
@@ -471,7 +478,7 @@ void main() {
       }
 
       expect(error is RangeError, equals(true));
-      expect(eq(uniqueList, expectedList), equals(true));
+      expect(eq(uniqueList, expectedList2), equals(true));
     });
 
     test('[]= Operator', () {

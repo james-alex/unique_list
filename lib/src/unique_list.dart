@@ -537,12 +537,23 @@ class UniqueList<E> implements List<E> {
   ///
   /// If any of [iterable]'s elements already exist in the list, a
   /// [DuplicateValueError] will be thrown regardless of whether the list
-  /// is strict or not.
+  /// is strict or not, unless the resulting list does not contain any duplicate
+  /// values once all values have been set.
   @override
   void setAll(int index, Iterable<E> iterable) {
+    // Check if any of the values in [iterable] already exist in the list.
     for (var value in iterable) {
       if (_contains(value)) {
-        throw DuplicateValueError(value);
+        // If so, check whether the list will contain any duplicate values once
+        // every value has been set.
+        final result = List<E>.of(_elements)..setAll(index, iterable);
+
+        if (_containsDuplicateValues(result, nullable: nullable)) {
+          throw DuplicateValueError(
+              _getDuplicateValue(result, nullable: nullable));
+        } else {
+          break;
+        }
       }
     }
 
@@ -600,12 +611,24 @@ class UniqueList<E> implements List<E> {
   ///
   /// If any of [iterable]'s elements already exist in the list, a
   /// [DuplicateValueError] will be thrown regardless of whether the list
-  /// is strict or not.
+  /// is strict or not, unless the resulting list does not contain any duplicate
+  /// values once all values have been set.
   @override
   void setRange(int start, int end, Iterable<E> iterable, [int skipCount = 0]) {
+    // Check if any of the values in [iterable] already exist in the list.
     for (var value in iterable) {
       if (_contains(value)) {
-        throw DuplicateValueError(value);
+        // If so, check whether the list will contain any duplicate values once
+        // every value has been set.
+        final result = List<E>.of(_elements)
+          ..setRange(start, end, iterable, skipCount);
+
+        if (_containsDuplicateValues(result, nullable: nullable)) {
+          throw DuplicateValueError(
+              _getDuplicateValue(result, nullable: nullable));
+        } else {
+          break;
+        }
       }
     }
 
@@ -682,12 +705,24 @@ class UniqueList<E> implements List<E> {
   ///
   /// If any of [replacements]'s elements already exist in the list, a
   /// [DuplicateValueError] will be thrown regardless of whether the list
-  /// is strict or not.
+  /// is strict or not, unless the resulting list does not contain any duplicate
+  /// values once all values have been set.
   @override
   void replaceRange(int start, int end, Iterable<E> replacement) {
+    // Check if any of the values in [replacement] already exist in the list.
     for (var value in replacement) {
       if (_contains(value)) {
-        throw DuplicateValueError(value);
+        // If so, check whether the list will contain any duplicate values once
+        // every value has been set.
+        final result = List<E>.of(_elements)
+          ..replaceRange(start, end, replacement);
+
+        if (_containsDuplicateValues(result, nullable: nullable)) {
+          throw DuplicateValueError(
+              _getDuplicateValue(result, nullable: nullable));
+        } else {
+          break;
+        }
       }
     }
 

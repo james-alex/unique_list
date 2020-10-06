@@ -178,7 +178,8 @@ print(list); // [3, 0, 1, 2]
 
 When setting values with the [setAll], [setRange], [first], [last], or the `[]=`
 operator a [DuplicateValueError] will always be thrown, regardless of whether the
-list is strict or not.
+list is strict or not, unless the resulting list does not contain any duplicate
+values once all values have been set.
 
 ```dart
 final list = UniqueList<int>.from([0, 1, 2]);
