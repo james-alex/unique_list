@@ -36,7 +36,7 @@ extension ToUniqueList<E> on Iterable<E> {
 /// An implementation of [List] that enforces all values be unique.
 class UniqueList<E> implements List<E> {
   UniqueList([int length])
-      : _elements = length == null ? <E>[] : List<E>(length),
+      : _elements = length == null ? <E>[] : List<E>.filled(length, null),
         nullable = length == null ? false : true,
         strict = false;
 
@@ -70,7 +70,7 @@ class UniqueList<E> implements List<E> {
     assert(length == null || length >= 0);
 
     if (length != null) {
-      return UniqueList._(List<E>(length), strict: true);
+      return UniqueList._(List<E>.filled(length, null), strict: true);
     }
 
     return UniqueList._(<E>[], strict: true);
