@@ -843,7 +843,7 @@ class UniqueList<E> implements List<E> {
     }
   }
 
-  /// Returns `true` if [list] contains more than once instance of any element
+  /// Returns `true` if [list] contains more than one instance of any element
   /// contained within the list, otherwise returns `false`.
   static bool _containsDuplicateValues(List list, {@required bool nullable}) {
     assert(list != null);
