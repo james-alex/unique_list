@@ -359,7 +359,7 @@ void main() {
       Error error;
 
       try {
-        uniqueList.setRange(0, 10, list.reversed, 3);
+        uniqueList.setRange(0, 7, list.reversed);
       } catch (e) {
         error = e;
       }
