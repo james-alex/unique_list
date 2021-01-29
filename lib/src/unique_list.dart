@@ -615,6 +615,11 @@ class UniqueList<E> implements List<E> {
   /// values once all values have been set.
   @override
   void setRange(int start, int end, Iterable<E> iterable, [int skipCount = 0]) {
+    assert(start != null && start >= 0 && start <= end);
+    assert(end != null && end >= start && end <= length);
+    assert(iterable != null && iterable.length >= end - start);
+    assert(skipCount != null && skipCount >= 0);
+
     // Check if any of the values in [iterable] already exist in the list.
     for (var value in iterable) {
       if (_contains(value)) {
