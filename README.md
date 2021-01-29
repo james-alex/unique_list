@@ -203,11 +203,11 @@ in a nullable list, or if only a single element is being set.
 
 As many of [List]'s methods return an [Iterable], they're often cast back to a
 [List] using [Iterable]'s [toList] method. To follow the same pattern, this package
-extends [Iterable] with a [toUniqueList] method.
+extends [Iterable] with the [toUniqueList] method.
 
 Like [toList], the [toUniqueList] method contains a [growable] parameter, in
-addition to the [nullable] and [strict] parameters, which are `true` and `false`
-respectively by default.
+addition to the [nullable] and [strict] parameters, which by default are `true`
+and `false` respectively.
 
 ```dart
 var list = UniqueList<int>.from([0, 1, 2, 3, 4]);
