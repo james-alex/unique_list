@@ -1,3 +1,9 @@
+## [1.0.0] - March 17, 2021
+
+* Migrated to null-safe code.
+
+* [fillRange] is now unimplemented and throws an [UnsupportedError].
+
 ## [0.1.2] - October 6, 2020
 
 * Updated the [setAll], [setRange], and [replaceRange] methods to allow
