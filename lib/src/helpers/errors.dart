@@ -3,7 +3,7 @@
 class DuplicateValueError extends Error {
   DuplicateValueError(this.value);
 
-  final Object value;
+  final dynamic value;
 
   @override
   String toString() =>
@@ -15,7 +15,7 @@ class DuplicateValueError extends Error {
 class DuplicateValuesError extends Error {
   DuplicateValuesError(this.value);
 
-  final Object value;
+  final dynamic value;
 
   @override
   String toString() => 'DuplicateValuesError: '

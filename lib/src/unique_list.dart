@@ -1,5 +1,4 @@
 import 'dart:math' show Random;
-import 'package:meta/meta.dart';
 import 'helpers/errors.dart';
 import 'helpers/typedefs.dart';
 
@@ -21,13 +20,8 @@ extension ToUniqueList<E> on Iterable<E> {
     bool nullable = true,
     bool strict = false,
   }) {
-    assert(growable != null);
-    assert(nullable != null);
-    assert(strict != null);
-
     final list = UniqueList._constructListFrom<E>(this,
         nullable: nullable, strict: strict);
-
     return UniqueList._(List<E>.from(list, growable: growable),
         nullable: nullable, strict: strict);
   }
@@ -35,17 +29,24 @@ extension ToUniqueList<E> on Iterable<E> {
 
 /// An implementation of [List] that enforces all values be unique.
 class UniqueList<E> implements List<E> {
-  UniqueList([int length])
-      : _elements = length == null ? <E>[] : List<E>.filled(length, null),
-        nullable = length == null ? false : true,
+  /// Constructs a new [UniqueList].
+  ///
+  /// If [strict] is `true`, a [DuplicateValueError] will be thrown when a value
+  /// is added to the list that already exists in the list.
+  ///
+  /// If [nullable] is `true`, the list may contain multiple instances of `null`,
+  /// otherwise, `null` will be treated like any other value and only
+  /// one instance of `null` may be contained in the list.
+  UniqueList({
+    bool strict = false,
+    bool nullable = true,
+  })  : _elements = <E>[],
+        nullable = false,
         strict = false;
 
   /// Creates a [UniqueList] wrapped around [_elements].
   UniqueList._(this._elements, {this.nullable = true, this.strict = false})
-      : assert(_elements != null),
-        assert(nullable != null),
-        assert(strict != null),
-        assert(!_containsDuplicateValues(_elements, nullable: nullable));
+      : assert(!_containsDuplicateValues(_elements, nullable: nullable));
 
   /// The underlying [List] containing all of the elements in this list.
   final List<E> _elements;
@@ -66,15 +67,7 @@ class UniqueList<E> implements List<E> {
   /// a growable list will be created. __Note:__ To create a growable, strict
   /// and non-nullable list, use [UniqueList.empty] and set the [strict] and
   /// [nullable] parameters to `true` and `false` respectively.
-  factory UniqueList.strict([int length]) {
-    assert(length == null || length >= 0);
-
-    if (length != null) {
-      return UniqueList._(List<E>.filled(length, null), strict: true);
-    }
-
-    return UniqueList._(<E>[], strict: true);
-  }
+  factory UniqueList.strict() => UniqueList._(<E>[], strict: true);
 
   /// Creates a new empty list.
   ///
@@ -93,10 +86,6 @@ class UniqueList<E> implements List<E> {
     bool strict = false,
     bool nullable = true,
   }) {
-    assert(growable != null);
-    assert(strict != null);
-    assert(nullable != null);
-
     return UniqueList<E>._(List<E>.empty(growable: growable),
         nullable: nullable, strict: strict);
   }
@@ -124,19 +113,13 @@ class UniqueList<E> implements List<E> {
   /// otherwise, `null` will be treated like any other value and only
   /// one instance of `null` may be contained in the list.
   factory UniqueList.from(
-    Iterable elements, {
+    Iterable<E> elements, {
     bool growable = true,
     bool strict = false,
     bool nullable = true,
   }) {
-    assert(elements != null);
-    assert(growable != null);
-    assert(strict != null);
-    assert(nullable != null);
-
     final list =
         _constructListFrom<E>(elements, nullable: nullable, strict: strict);
-
     return UniqueList<E>._(List<E>.from(list, growable: growable),
         nullable: nullable, strict: strict);
   }
@@ -160,14 +143,8 @@ class UniqueList<E> implements List<E> {
     bool strict = false,
     bool nullable = true,
   }) {
-    assert(elements != null);
-    assert(growable != null);
-    assert(strict != null);
-    assert(nullable != null);
-
     final list =
         _constructListFrom<E>(elements, nullable: nullable, strict: strict);
-
     return UniqueList<E>._(List<E>.of(list, growable: growable),
         nullable: nullable, strict: strict);
   }
@@ -197,11 +174,7 @@ class UniqueList<E> implements List<E> {
     bool strict = false,
     bool nullable = true,
   }) {
-    assert(length != null && length >= 0);
-    assert(generator != null);
-    assert(growable != null);
-    assert(strict != null);
-    assert(nullable != null);
+    assert(length >= 0);
 
     var list = List<E>.generate(length, generator, growable: growable);
 
@@ -230,9 +203,6 @@ class UniqueList<E> implements List<E> {
     Iterable elements, {
     bool nullable = true,
   }) {
-    assert(elements != null);
-    assert(nullable != null);
-
     final list = List<E>.unmodifiable(elements);
 
     if (_containsDuplicateValues(list, nullable: nullable)) {
@@ -269,13 +239,8 @@ class UniqueList<E> implements List<E> {
     bool strict = false,
     bool nullable = true,
   }) {
-    assert(source != null);
-    assert(strict != null);
-    assert(nullable != null);
-
     final list = _constructListFrom<T>(List.castFrom<S, T>(source),
         nullable: nullable, strict: strict);
-
     return UniqueList<T>._(list, nullable: nullable, strict: strict);
   }
 
@@ -323,7 +288,7 @@ class UniqueList<E> implements List<E> {
   Iterable<T> expand<T>(Expand<T, E> f) => _elements.expand<T>(f);
 
   @override
-  bool contains(Object element) => _elements.contains(element);
+  bool contains(Object? element) => _elements.contains(element);
 
   @override
   void forEach(ForEach<E> f) => _elements.forEach(f);
@@ -358,7 +323,6 @@ class UniqueList<E> implements List<E> {
     if (value != _elements.first && _contains(value)) {
       throw DuplicateValueError(value);
     }
-
     _elements.first = value;
   }
 
@@ -387,15 +351,15 @@ class UniqueList<E> implements List<E> {
   E get single => _elements.single;
 
   @override
-  E firstWhere(Test<E> test, {OrElse<E> orElse}) =>
+  E firstWhere(Test<E> test, {OrElse<E>? orElse}) =>
       _elements.firstWhere(test, orElse: orElse);
 
   @override
-  E lastWhere(Test<E> test, {OrElse<E> orElse}) =>
+  E lastWhere(Test<E> test, {OrElse<E>? orElse}) =>
       _elements.lastWhere(test, orElse: orElse);
 
   @override
-  E singleWhere(Test<E> test, {OrElse<E> orElse}) =>
+  E singleWhere(Test<E> test, {OrElse<E>? orElse}) =>
       _elements.singleWhere(test, orElse: orElse);
 
   @override
@@ -451,10 +415,10 @@ class UniqueList<E> implements List<E> {
   Iterable<E> get reversed => _elements.reversed;
 
   @override
-  void sort([Compare<E> compare]) => _elements.sort(compare);
+  void sort([Compare<E>? compare]) => _elements.sort(compare);
 
   @override
-  void shuffle([Random random]) => _elements.shuffle(random);
+  void shuffle([Random? random]) => _elements.shuffle(random);
 
   @override
   int indexOf(E element, [int start = 0]) => _elements.indexOf(element, start);
@@ -464,11 +428,11 @@ class UniqueList<E> implements List<E> {
       _elements.indexWhere(test, start);
 
   @override
-  int lastIndexWhere(Test<E> test, [int start]) =>
+  int lastIndexWhere(Test<E> test, [int? start]) =>
       _elements.lastIndexWhere(test, start);
 
   @override
-  int lastIndexOf(E element, [int start]) =>
+  int lastIndexOf(E element, [int? start]) =>
       _elements.lastIndexOf(element, start);
 
   @override
@@ -561,7 +525,7 @@ class UniqueList<E> implements List<E> {
   }
 
   @override
-  bool remove(Object value) => _elements.remove(value);
+  bool remove(Object? value) => _elements.remove(value);
 
   @override
   E removeAt(int index) => _elements.removeAt(index);
@@ -576,7 +540,7 @@ class UniqueList<E> implements List<E> {
   void retainWhere(Test<E> test) => _elements.retainWhere(test);
 
   @override
-  UniqueList<E> sublist(int start, [int end]) =>
+  UniqueList<E> sublist(int start, [int? end]) =>
       UniqueList<E>._(_elements.sublist(start, end));
 
   @override
@@ -615,10 +579,10 @@ class UniqueList<E> implements List<E> {
   /// values once all values have been set.
   @override
   void setRange(int start, int end, Iterable<E> iterable, [int skipCount = 0]) {
-    assert(start != null && start >= 0 && start <= end);
-    assert(end != null && end >= start && end <= length);
-    assert(iterable != null && iterable.length >= end - start);
-    assert(skipCount != null && skipCount >= 0);
+    assert(start >= 0 && start <= end);
+    assert(end >= start && end <= length);
+    assert(iterable.length >= end - start);
+    assert(skipCount >= 0);
 
     // Check if any of the values in [iterable] already exist in the list.
     for (var value in iterable) {
@@ -643,55 +607,10 @@ class UniqueList<E> implements List<E> {
   @override
   void removeRange(int start, int end) => _elements.removeRange(start, end);
 
-  /// Sets the objects in the range [start] inclusive to [end] exclusive to
-  /// the given [fillValue], with some caveats.
-  ///
-  /// If [strict] is `false`, the object at [start] will be set to [fillValue]
-  /// and the rest of the range through [end] will be removed from the list.
-  /// However, if [strict] is `true`, `end - start <= 1` must be `true`,
-  /// otherwise a [DuplicateValueError] will be thrown.
-  ///
-  /// If [nullable] is `true` and [fillValue] is `null`, the range will be
-  /// filled with `null`, regardless of [strict]'s value. However, if [nullable]
-  /// and [strict] are both `false` the object at [start] will be set to `null`
-  /// and the rest of the range through [end] will be removed from the list.
-  ///
-  /// In either of the cases above where values are removed from the list
-  /// an [UnsupportedError] will be thrown if this is a fixed-length list.
-  ///
-  /// An empty range (with `end == start`) is valid, in which case the list
-  /// will be left unmodified.
   @override
-  void fillRange(int start, int end, [E fillValue]) {
-    assert(start != null && start >= 0 && start <= end);
-    assert(end != null && end >= start && end <= length);
-
-    if (end - start == 0) {
-      return;
-    }
-
-    if (((_elements[start] == fillValue || !_contains(fillValue)) &&
-            end - start == 1) ||
-        (nullable && fillValue == null)) {
-      _elements.fillRange(start, end, fillValue);
-    } else if (!strict && end - start > 1) {
-      final startValue = _elements[start];
-
-      try {
-        _elements[start] = fillValue;
-        _elements.removeRange(start + 1, end);
-      } on UnsupportedError {
-        if (nullable) {
-          _elements.fillRange(start + 1, end, null);
-        } else {
-          _elements[start] = startValue;
-          throw UnsupportedError(
-              'Cannot fill values from a non-nullable fixed-length list.');
-        }
-      }
-    } else {
-      throw DuplicateValueError(fillValue);
-    }
+  void fillRange(int start, int end, [E? fillValue]) {
+    throw UnsupportedError(
+        'UniqueList cannot fill values, as all values must be unique.');
   }
 
   /// Removes the objects in the range [start] inclusive to [end] exclusive
@@ -833,7 +752,7 @@ class UniqueList<E> implements List<E> {
 
   /// Returns `true` if [_elements] contains [value], unless [value] is `null`
   /// and nullable is `false`.
-  bool _contains(E value) =>
+  bool _contains(E? value) =>
       (!nullable || value != null) && _elements.contains(value);
 
   /// If [_elements] contains [value], throw a [DuplicateValueError] if [strict]
@@ -850,10 +769,7 @@ class UniqueList<E> implements List<E> {
 
   /// Returns `true` if [list] contains more than one instance of any element
   /// contained within the list, otherwise returns `false`.
-  static bool _containsDuplicateValues(List list, {@required bool nullable}) {
-    assert(list != null);
-    assert(nullable != null);
-
+  static bool _containsDuplicateValues(List list, {required bool nullable}) {
     final elementsChecked = [];
 
     for (var element in list) {
@@ -872,10 +788,7 @@ class UniqueList<E> implements List<E> {
   }
 
   /// Returns the first duplicate value found within [list].
-  static E _getDuplicateValue<E>(List<E> list, {@required bool nullable}) {
-    assert(list != null);
-    assert(nullable != null);
-
+  static E? _getDuplicateValue<E>(List<E> list, {required bool nullable}) {
     final elementsChecked = [];
 
     for (var element in list) {
@@ -897,11 +810,8 @@ class UniqueList<E> implements List<E> {
   /// of the value.
   static List<E> _removeDuplicateValues<E>(
     List<E> list, {
-    @required bool nullable,
+    required bool nullable,
   }) {
-    assert(list != null);
-    assert(nullable != null);
-
     final elements = <E>[];
 
     for (var element in list) {
@@ -921,13 +831,9 @@ class UniqueList<E> implements List<E> {
 
   static List<E> _constructListFrom<E>(
     Iterable<E> elements, {
-    @required bool strict,
-    @required bool nullable,
+    required bool strict,
+    required bool nullable,
   }) {
-    assert(elements != null);
-    assert(strict != null);
-    assert(nullable != null);
-
     var list = elements.toList();
 
     if (!strict) {
