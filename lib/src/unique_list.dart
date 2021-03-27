@@ -2,31 +2,6 @@ import 'dart:math' show Random;
 import 'helpers/errors.dart';
 import 'helpers/typedefs.dart';
 
-/// Adds a method to [Iterable] to create a [UniqueList] containing
-/// the elements of this iterable.
-extension ToUniqueList<E> on Iterable<E> {
-  /// Creates an [UniqueList] containing the elements of this iterable.
-  ///
-  /// The elements are in iteration order.
-  ///
-  /// The list is fixed-length if [growable] is `false`.
-  ///
-  /// If [strict] is `true`, every value in this iterable must be unique,
-  /// otherwise a [DuplicateValuesError] will be thrown. If `false`, duplicate
-  /// values will be removed from the list, with only the first occurence of
-  /// the value remaining.
-  UniqueList<E> toUniqueList({
-    bool growable = true,
-    bool nullable = true,
-    bool strict = false,
-  }) {
-    final list = UniqueList._constructListFrom<E>(this,
-        nullable: nullable, strict: strict);
-    return UniqueList._(List<E>.from(list, growable: growable),
-        nullable: nullable, strict: strict);
-  }
-}
-
 /// An implementation of [List] that enforces all values be unique.
 class UniqueList<E> implements List<E> {
   /// Constructs a new [UniqueList].
@@ -844,5 +819,30 @@ class UniqueList<E> implements List<E> {
     }
 
     return list;
+  }
+}
+
+/// Adds a method to [Iterable] to create a [UniqueList] containing
+/// the elements of this iterable.
+extension ToUniqueList<E> on Iterable<E> {
+  /// Creates an [UniqueList] containing the elements of this iterable.
+  ///
+  /// The elements are in iteration order.
+  ///
+  /// The list is fixed-length if [growable] is `false`.
+  ///
+  /// If [strict] is `true`, every value in this iterable must be unique,
+  /// otherwise a [DuplicateValuesError] will be thrown. If `false`, duplicate
+  /// values will be removed from the list, with only the first occurence of
+  /// the value remaining.
+  UniqueList<E> toUniqueList({
+    bool growable = true,
+    bool nullable = true,
+    bool strict = false,
+  }) {
+    final list = UniqueList._constructListFrom<E>(this,
+        nullable: nullable, strict: strict, growable: growable);
+    return UniqueList._(List<E>.from(list, growable: growable),
+        nullable: nullable, strict: strict, growable: growable);
   }
 }
