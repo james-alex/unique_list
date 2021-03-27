@@ -1,3 +1,9 @@
+## [1.0.1] - March 26, 2021
+
+* [UniqueList] now extends [BaseList] from the [list_utilities](https://pub.dev/packages/list_utilities) package, instead of implementing [List] directly.
+
+* Added the [growable] parameter to the default constructor.
+
 ## [1.0.0] - March 17, 2021
 
 * Migrated to null-safe code.
