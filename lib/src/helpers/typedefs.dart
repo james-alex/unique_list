@@ -1,9 +1,0 @@
-typedef Combine<E> = E Function(E value, E element);
-typedef Compare<E> = int Function(E a, E b);
-typedef Expand<T, E> = Iterable<T> Function(E element);
-typedef Fold<T, E> = T Function(T previousValue, E element);
-typedef ForEach<E> = void Function(E element);
-typedef Generator<E> = E Function(int index);
-typedef Mapper<T, E> = T Function(E element);
-typedef OrElse<E> = E Function();
-typedef Test<E> = bool Function(E element);
