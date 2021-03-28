@@ -39,11 +39,6 @@ class UniqueList<E> extends BaseList<E> {
 
   /// Creates a new UniqueList that throws [DuplicateValueError]s if a value
   /// is added to the list already exists in the list.
-  ///
-  /// If [length] is provided, a fixed-length list will be created, otherwise
-  /// a growable list will be created. __Note:__ To create a growable, strict
-  /// and non-nullable list, use [UniqueList.empty] and set the [strict] and
-  /// [nullable] parameters to `true` and `false` respectively.
   factory UniqueList.strict() =>
       UniqueList._(<E>[], strict: true, growable: true);
 
